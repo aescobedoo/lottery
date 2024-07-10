@@ -1,26 +1,30 @@
 {
   "files": {
     "main.css": "/lottery/static/css/main.7b69dcf5.css",
-    "main.js": "/lottery/static/js/main.bb5924c2.js",
+    "main.js": "/lottery/static/js/main.1d51d9d2.js",
     "static/js/453.817fdcfc.chunk.js": "/lottery/static/js/453.817fdcfc.chunk.js",
     "static/media/botella.mp3": "/lottery/static/media/botella.affd412e62efb5505cba.mp3",
     "static/media/corre.mp3": "/lottery/static/media/corre.ca4d8d822b5393656cb8.mp3",
     "static/media/escalera.mp3": "/lottery/static/media/escalera.784c0ee8b58fbcbaf16a.mp3",
     "static/media/diablito.mp3": "/lottery/static/media/diablito.cf954a33f08038777aaa.mp3",
     "static/media/paraguas.mp3": "/lottery/static/media/paraguas.9fc9b1692c213f6fbb05.mp3",
+    "static/media/valiente.mp3": "/lottery/static/media/valiente.9d217fb399e69205faea.mp3",
+    "static/media/muerte.mp3": "/lottery/static/media/muerte.17ab8ea3a4ec681dc7bc.mp3",
     "static/media/sirena.mp3": "/lottery/static/media/sirena.c9f8baec3ef1ec570244.mp3",
     "static/media/arbol.mp3": "/lottery/static/media/arbol.32788346680d7f176497.mp3",
+    "static/media/pera.mp3": "/lottery/static/media/pera.9614015810f7a26d0f72.mp3",
     "static/media/barril.mp3": "/lottery/static/media/barril.ef11fb143e53b4e95c0a.mp3",
     "static/media/catrin.mp3": "/lottery/static/media/catrin.b84dddfb0b7045a87480.mp3",
     "static/media/gallo.mp3": "/lottery/static/media/gallo.1b2ce0135969c15e69f9.mp3",
+    "static/media/melon.mp3": "/lottery/static/media/melon.5ae1b5bf853ef5daf071.mp3",
     "static/media/dama.mp3": "/lottery/static/media/dama.7a1fdfdb1044c2e498cf.mp3",
     "index.html": "/lottery/index.html",
     "main.7b69dcf5.css.map": "/lottery/static/css/main.7b69dcf5.css.map",
-    "main.bb5924c2.js.map": "/lottery/static/js/main.bb5924c2.js.map",
+    "main.1d51d9d2.js.map": "/lottery/static/js/main.1d51d9d2.js.map",
     "453.817fdcfc.chunk.js.map": "/lottery/static/js/453.817fdcfc.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.7b69dcf5.css",
-    "static/js/main.bb5924c2.js"
+    "static/js/main.1d51d9d2.js"
   ]
 }
