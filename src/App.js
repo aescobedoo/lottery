@@ -20,6 +20,7 @@ function App() {
   const [card, setCard] = useState(0);
   const [play, setPlay] = useState(false);
   const [audioFiles, setAudioFiles] = useState({});
+  const [imageFiles, setImageFiles] = useState({});
   const [seconds, setSeconds] = useState(1.5);
   const [menu, setMenu] = useState(false);
   const [toggled, setToggled] = useState(true); // Set initial state to true for checked by default
@@ -42,7 +43,21 @@ function App() {
       setAudioFiles(files);
     };
 
+    const loadImageFiles = async () => {
+      const images = {};
+
+      // Preload the card images
+      for (const card of cards) {
+        const img = new Image();
+        img.src = card.img;
+        images[card.img] = img;
+      }
+
+      setImageFiles(images);
+    };
+
     loadAudioFiles();
+    loadImageFiles();
   }, []);
 
   const playAudio = (audioFile) => {
@@ -122,7 +137,10 @@ function App() {
   return (
     <div className="main">
       <div className="circle"></div>
-      <Card card={playingCards[card]} />
+      <Card
+        card={playingCards[card]}
+        image={imageFiles[playingCards[card].image]}
+      />
       <div className="actions">
         <Button content={"barajar"} onClick={shuffle} />
         <Button

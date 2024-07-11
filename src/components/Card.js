@@ -1,10 +1,10 @@
-import React from 'react';
+import React from "react";
 
-export default function Card({card}) {
+export default function Card({ card, image }) {
   return (
     <div className="cardContainer">
       <div className="lotteryCard">
-        <img src={card.img} alt={card.title} />
+        <img src={image} alt={card.title} /> {/* Use the preloaded image */}
       </div>
       <h3>{`# ${card.number}`}</h3>
       <h2>{card.title}</h2>
