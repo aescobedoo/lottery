@@ -25,19 +25,19 @@ function App() {
   const [menu, setMenu] = useState(false);
   const [toggled, setToggled] = useState(true); // Set initial state to true for checked by default
 
+  // Centralized audio element
+  const audioElement = new Audio();
+
   useEffect(() => {
     const loadAudioFiles = async () => {
       const files = {};
 
       // Preload the intro audio
-      files["corre"] = new Audio(corre);
-      files["corre"].preload = "auto"; // Ensure the audio is preloaded
+      files["corre"] = corre;
 
       // Preload the card audio files
       for (const card of cards) {
-        const audio = new Audio(card.audio);
-        audio.preload = "auto"; // Ensure the audio is preloaded
-        files[card.audio] = audio;
+        files[card.audio] = card.audio;
       }
 
       setAudioFiles(files);
@@ -61,10 +61,10 @@ function App() {
   }, []);
 
   const playAudio = (audioFile) => {
-    const audio = audioFiles[audioFile];
-    if (audio) {
-      audio.currentTime = 0; // Reset to the beginning
-      audio
+    if (audioFile in audioFiles) {
+      audioElement.src = audioFiles[audioFile];
+      audioElement.currentTime = 0; // Reset to the beginning
+      audioElement
         .play()
         .catch((error) => console.error(`Error playing audio: ${error}`));
     }
@@ -90,6 +90,7 @@ function App() {
 
   const pause = () => {
     setPlay(false);
+    audioElement.pause();
   };
 
   useEffect(() => {
@@ -139,7 +140,7 @@ function App() {
       <div className="circle"></div>
       <Card
         card={playingCards[card]}
-        image={imageFiles[playingCards[card].image]}
+        image={imageFiles[playingCards[card].img]?.src} // Pass the preloaded image
       />
       <div className="actions">
         <Button content={"barajar"} onClick={shuffle} />
