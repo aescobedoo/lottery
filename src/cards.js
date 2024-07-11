@@ -8,6 +8,11 @@ import escalera from "./resources/cards/escalera.mp3";
 import botella from "./resources/cards/botella.mp3";
 import barril from "./resources/cards/barril.mp3";
 import arbol from "./resources/cards/arbol.mp3";
+import melon from "./resources/cards/melon.mp3";
+import valiente from "./resources/cards/valiente.mp3";
+import gorrito from "./resources/cards/gorrito.mp3";
+import muerte from "./resources/cards/muerte.mp3";
+import pera from "./resources/cards/pera.mp3";
 
 
 const cards = [
@@ -70,6 +75,36 @@ const cards = [
     title: "El árbol",
     img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiAzOW_ZuznkiJ2VmVFZH5vTzK-9fx7de8F37BejIrKvFRji1GS6iqBQYklSCvwDn1dguyU0vxcnBMIhxG_HZsFxtfMg-6tgCcVdlha31WjTht4eptKwYxeNqsQn13vCaH55hg3FMWY8_EC/s2048/10+arbol-min.jpg",
     audio: arbol,
+  },
+  {
+    number: 11,
+    title: "El melón",
+    img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgOxWPG-bRHmcjPTTnE-Uf7YUbgQ51S2Qil0XqkL0iXRnNGkIJMV-1Qzl7BwfNceoRqwWdRdyKyaTLMtR6dB2EuQPiIPRBRBZD2miFdaEKlUQUkXIAHyCQ9IeeOrVGsaQCZLVPkCRFOT0cT/s2048/11+melon-min.jpg",
+    audio: melon,
+  },
+  {
+    number: 12,
+    title: "El valiente",
+    img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh2CRz8N2qxDEui9ILDY9IufJkZIB6puFQ6BmsFrclePaItPwa9ofa2NnnQWB03dhNTH_GraMqoeyVuDjjMCN5clzg8MybBb4f0XYB_8yJ6Ew6S6sWNhg9Vqhdj9VqJEb6MNzSN40vCQzeT/s2048/12+el+valiente-min.jpg",
+    audio: valiente,
+  },
+  {
+    number: 13,
+    title: "El gorrito",
+    img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh9nuWPC1gXBR-W6mDM4K0Xqcyed1RfcFIQIBQqro27YCEUVyZ4FXSqFQnW3OLbt9BLWygPgpd7mBMK-FNShE6qe-0nl10LfWclIU1bOEHqxpkw7fEkrmiV27TRsAu3kL31JB8UsHkO0oiT/s2048/13+el+gorrito-min.jpg",
+    audio: gorrito,
+  },
+  {
+    number: 14,
+    title: "La muerte",
+    img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhMcD_79SiNSP_lj6e63Zy42Du4q-lGvha-_-W6saAzzwjHdNV-S-lC8d78lt3trfZLr7HlCgOhwvVK_I-TaFiEjIp_7HPHhUQMqaSgGUSEjImXlSIEzcu0-2vLJR9JuktPSMaUQ7-6gChj/s2048/14+la+muerte-min.jpg",
+    audio: muerte,
+  },
+  {
+    number: 15,
+    title: "La pera",
+    img: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi8DkNIeeFvuZAyUec-TscLnsc5epuYjU_CXsiN7eXv4u45XespkeSenZdlaaB4hW5aIn6ObnqA-dUT2Udkd_EaWr8qgX95HhseJG3tptvd6CwBpZM-R4Ti6d7szivF-k4rqz_v_8Ci_gDt/s2048/15+la+pera-min.jpg",
+    audio: pera,
   },
 ];
 
