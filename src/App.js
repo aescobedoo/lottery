@@ -1,13 +1,14 @@
 import "./App.css";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import cards from "./cards";
 import Card from "./components/Card";
 import Button from "./components/Button";
 import Settings from "./components/Settings";
 import corre from "./resources/corre.mp3"; // Import the intro audio
 
+// Utility function to shuffle an array
 const shuffleArray = (array) => {
-  let shuffledArray = [...array]; // Create a copy of the array to avoid mutating the original
+  const shuffledArray = [...array];
   for (let i = shuffledArray.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
@@ -17,151 +18,151 @@ const shuffleArray = (array) => {
 
 function App() {
   const [playingCards, setPlayingCards] = useState(shuffleArray(cards));
-  const [card, setCard] = useState(0);
-  const [play, setPlay] = useState(false);
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [audioFiles, setAudioFiles] = useState({});
   const [imageFiles, setImageFiles] = useState({});
-  const [seconds, setSeconds] = useState(1.5);
-  const [menu, setMenu] = useState(false);
-  const [toggled, setToggled] = useState(true); // Set initial state to true for checked by default
+  const [intervalSeconds, setIntervalSeconds] = useState(1.5);
+  const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
+  const [isAutoPlayEnabled, setIsAutoPlayEnabled] = useState(true);
+  const memoCards = useMemo( () => {
+    console.log("saving cards into the memory", cards)
+    return cards;
+  }, cards);
 
-  // Centralized audio element
   const audioElement = new Audio();
 
   useEffect(() => {
-    const loadAudioFiles = async () => {
+    console.log("rendering 1st use effect");
+
+    const preloadAudioFiles = () => {
       const files = {};
-
-      // Preload the intro audio
       files["corre"] = corre;
-
-      // Preload the card audio files
-      for (const card of cards) {
+      cards.forEach((card) => {
         files[card.audio] = card.audio;
-      }
-
+      });
       setAudioFiles(files);
     };
 
-    const loadImageFiles = async () => {
+    const preloadImageFiles = () => {
       const images = {};
-
-      // Preload the card images
-      for (const card of cards) {
+      cards.forEach((card) => {
         const img = new Image();
         img.src = card.img;
         images[card.img] = img;
-      }
-
+      });
       setImageFiles(images);
     };
 
-    loadAudioFiles();
-    loadImageFiles();
+    preloadAudioFiles();
+    preloadImageFiles();
   }, []);
 
-  const playAudio = (audioFile) => {
-    if (audioFile in audioFiles) {
-      audioElement.src = audioFiles[audioFile];
-      audioElement.currentTime = 0; // Reset to the beginning
+  const memoAudios = useMemo(() => {
+    console.log("saving audios into the memory", audioFiles);
+    return audioFiles;
+  }, [audioFiles]);
+  const memoImages = useMemo(() => {
+    console.log("saving images into the memory", imageFiles);
+    return imageFiles;
+  }, [imageFiles]);
+
+  const playAudio = useCallback((audioFile) => {
+    console.log(`running playaudio function with audio ${audioFile}`);
+    if (memoAudios[audioFile]) {
+      audioElement.src = memoAudios[audioFile];
+      audioElement.currentTime = 0;
       audioElement
         .play()
         .catch((error) => console.error(`Error playing audio: ${error}`));
     }
-  };
+  }, [])
+  
+  
 
-  const shuffle = () => {
-    setPlayingCards(shuffleArray(cards));
-    setCard(0);
-    playAudio("corre"); // Play introductory audio
+  const shuffle = useCallback(() => {
+    setPlayingCards(shuffleArray(memoCards));
+    setCurrentCardIndex(0);
+    playAudio("corre");
     setTimeout(() => {
-      setPlay(true);
+      setIsPlaying(true);
     }, 2000);
-  };
+  }, []);
 
-  const nextCard = () => {
-    setPlay(true);
-    if (card >= cards.length - 1) {
-      setPlay(false);
-      return;
+
+  const nextCard = useCallback(() => {
+    setIsPlaying(true);
+    if (currentCardIndex < cards.length - 1) {
+      setCurrentCardIndex((prevIndex) => prevIndex + 1);
+    } else {
+      setIsPlaying(false);
     }
-    setCard((prev) => prev + 1);
-  };
+  }, []);
 
-  const pause = () => {
-    setPlay(false);
+  const pause = useCallback(() => {
+    setIsPlaying(false);
     audioElement.pause();
-  };
+  }, []);
 
   useEffect(() => {
-    if (!play) {
-      return;
+    if (!isPlaying) return;
+
+    playAudio(playingCards[currentCardIndex].audio);
+
+    if (isAutoPlayEnabled) {
+      const timeout = setTimeout(() => {
+        nextCard();
+      }, intervalSeconds * 1000);
+
+      return () => clearTimeout(timeout);
     }
-    playAudio(playingCards[card].audio); // Play card audio
-    const sec = seconds * 1000;
-    const timeout = setTimeout(() => {
-      nextCard();
-    }, sec);
+  }, [isPlaying, currentCardIndex]);
 
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, [play, card]);
-
-  const settings = (event) => {
+  const toggleSettingsMenu = (event) => {
     event.preventDefault();
-    setMenu((prev) => !prev);
+    setIsSettingsMenuOpen((prevState) => !prevState);
   };
 
-  const handleToggle = () => {
-    setToggled((prev) => !prev);
+  const handleAutoPlayToggle = () => {
+    setIsAutoPlayEnabled((prevState) => !prevState);
   };
 
-  const handleSubmit = (event) => {
+  const handleSettingsSubmit = (event) => {
     event.preventDefault();
-    let secs = event.target.querySelector("#inputText").value;
-    let toggle = event.target.querySelector("#toggle").checked; // use .checked instead of .value
-    setMenu(false);
-    setToggled(toggle);
-    try {
-      secs = parseFloat(secs);
-      if (!isNaN(secs)) {
-        setSeconds(secs);
-      } else {
-        setSeconds(1.5);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    const secs = parseFloat(event.target.querySelector("#inputText").value);
+    const toggle = event.target.querySelector("#toggle").checked;
+    setIntervalSeconds(!isNaN(secs) ? secs : 1.5);
+    setIsAutoPlayEnabled(toggle);
+    setIsSettingsMenuOpen(false);
   };
 
   return (
     <div className="main">
       <div className="circle"></div>
       <Card
-        card={playingCards[card]}
-        image={imageFiles[playingCards[card].img]?.src} // Pass the preloaded image
+        card={playingCards[currentCardIndex]}
+        image={memoImages[playingCards[currentCardIndex].img]?.src}
       />
       <div className="actions">
         <Button content={"barajar"} onClick={shuffle} />
         <Button
           content={"siguiente"}
           onClick={nextCard}
-          disabled={card >= cards.length - 1}
+          disabled={currentCardIndex >= cards.length - 1}
         />
         <Button
           content={"pausar"}
           onClick={pause}
-          disabled={card >= cards.length - 1 || !play}
+          disabled={currentCardIndex >= cards.length - 1 || !isPlaying}
         />
-        <Button content={"configuración"} onClick={settings} />
+        <Button content={"configuración"} onClick={toggleSettingsMenu} />
       </div>
-      {menu && (
+      {isSettingsMenuOpen && (
         <Settings
-          onSubmit={handleSubmit}
-          closeMenu={settings}
-          toggled={toggled} // Pass the state
-          handleToggled={handleToggle} // Pass the updater function
+          onSubmit={handleSettingsSubmit}
+          closeMenu={toggleSettingsMenu}
+          toggled={isAutoPlayEnabled}
+          handleToggled={handleAutoPlayToggle}
         />
       )}
     </div>
