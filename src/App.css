@@ -183,3 +183,9 @@ html {
   padding: 15px;
   border-radius: 30px;
 }
+
+@media only screen and (min-width: 500px) {
+  .main .circle {
+    display: none;
+  }
+}

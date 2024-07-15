@@ -145,7 +145,7 @@ html {
           border-radius: 30px;
           &::before {
             position: absolute;
-            content: '';
+            content: "";
             height: 80%;
             width: 40%;
             left: 5%;
@@ -180,6 +180,14 @@ html {
         padding: 15px;
         border-radius: 30px;
       }
+    }
+  }
+}
+
+@media only screen and (min-width: 500px) {
+  .main {
+    .circle {
+      display: none;
     }
   }
 }
