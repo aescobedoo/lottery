@@ -28,7 +28,7 @@ function App() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioFiles, setAudioFiles] = useState({});
   const [imageFiles, setImageFiles] = useState({});
-  const [intervalSeconds, setIntervalSeconds] = useState(1.5);
+  const [intervalSeconds, setIntervalSeconds] = useState(1.9);
   const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
   const [isAutoPlayEnabled, setIsAutoPlayEnabled] = useState(true);
 
