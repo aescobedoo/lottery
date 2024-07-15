@@ -1,5 +1,11 @@
 import "./App.css";
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useRef,
+} from "react";
 import cards from "./cards";
 import Card from "./components/Card";
 import Button from "./components/Button";
@@ -25,16 +31,11 @@ function App() {
   const [intervalSeconds, setIntervalSeconds] = useState(1.5);
   const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
   const [isAutoPlayEnabled, setIsAutoPlayEnabled] = useState(true);
-  const memoCards = useMemo( () => {
-    console.log("saving cards into the memory", cards)
-    return cards;
-  }, cards);
 
-  const audioElement = new Audio();
+  // Ref for audio element
+  const audioElement = useRef(new Audio());
 
   useEffect(() => {
-    console.log("rendering 1st use effect");
-
     const preloadAudioFiles = () => {
       const files = {};
       files["corre"] = corre;
@@ -58,37 +59,36 @@ function App() {
     preloadImageFiles();
   }, []);
 
-  const memoAudios = useMemo(() => {
-    console.log("saving audios into the memory", audioFiles);
-    return audioFiles;
-  }, [audioFiles]);
-  const memoImages = useMemo(() => {
-    console.log("saving images into the memory", imageFiles);
-    return imageFiles;
-  }, [imageFiles]);
+  const memoizedCards = useMemo(() => cards, []);
 
-  const playAudio = useCallback((audioFile) => {
-    console.log(`running playaudio function with audio ${audioFile}`);
-    if (memoAudios[audioFile]) {
-      audioElement.src = memoAudios[audioFile];
-      audioElement.currentTime = 0;
-      audioElement
-        .play()
-        .catch((error) => console.error(`Error playing audio: ${error}`));
-    }
-  }, [])
-  
-  
+  const playAudio = useCallback(
+    (audioFile) => {
+      if (audioFiles[audioFile]) {
+        console.log("Audio found");
+        audioElement.current.src = audioFiles[audioFile];
+        audioElement.current.currentTime = 0;
+        audioElement.current
+          .play()
+          .catch((error) => console.error(`Error playing audio: ${error}`));
+      } else {
+        console.log("Error finding the audio");
+      }
+    },
+    [audioFiles]
+  );
 
   const shuffle = useCallback(() => {
-    setPlayingCards(shuffleArray(memoCards));
+    console.log("Using shuffle");
+    console.log("Setting cards");
+    setPlayingCards(shuffleArray(memoizedCards));
     setCurrentCardIndex(0);
+    // Ensure the audio context is created on user interaction
     playAudio("corre");
     setTimeout(() => {
       setIsPlaying(true);
+      
     }, 2000);
-  }, []);
-
+  }, [memoizedCards, playAudio]);
 
   const nextCard = useCallback(() => {
     setIsPlaying(true);
@@ -97,11 +97,11 @@ function App() {
     } else {
       setIsPlaying(false);
     }
-  }, []);
+  }, [currentCardIndex]);
 
   const pause = useCallback(() => {
     setIsPlaying(false);
-    audioElement.pause();
+    audioElement.current.pause();
   }, []);
 
   useEffect(() => {
@@ -116,7 +116,15 @@ function App() {
 
       return () => clearTimeout(timeout);
     }
-  }, [isPlaying, currentCardIndex]);
+  }, [
+    isPlaying,
+    currentCardIndex,
+    playingCards,
+    playAudio,
+    isAutoPlayEnabled,
+    intervalSeconds,
+    nextCard,
+  ]);
 
   const toggleSettingsMenu = (event) => {
     event.preventDefault();
@@ -141,7 +149,7 @@ function App() {
       <div className="circle"></div>
       <Card
         card={playingCards[currentCardIndex]}
-        image={memoImages[playingCards[currentCardIndex].img]?.src}
+        image={imageFiles[playingCards[currentCardIndex].img]?.src}
       />
       <div className="actions">
         <Button content={"barajar"} onClick={shuffle} />
