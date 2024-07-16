@@ -26,7 +26,7 @@ html {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: clamp(200px, 20vh, 500px);
+  height: clamp(200px, 25vh, 500px);
   width: 100%;
 }
 .main .past .pastLotteryCard {
@@ -64,7 +64,7 @@ html {
   background-color: #8f0101;
   z-index: 0;
   position: absolute;
-  top: 35vh;
+  top: clamp(200px, 30%, 600px);
   flex: 1;
 }
 .main .cardContainer {
@@ -225,6 +225,11 @@ html {
 }
 
 @media only screen and (min-width: 500px) {
+  .main .circle {
+    display: none;
+  }
+}
+@media only screen and (max-width: 375px) {
   .main .circle {
     display: none;
   }
