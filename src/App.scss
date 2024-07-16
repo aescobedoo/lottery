@@ -16,12 +16,45 @@ html {
   display: flex;
   flex-direction: column;
   width: 100vw;
-  height: 100vh;
   align-items: center;
   overflow-y: scroll;
   overflow-x: hidden;
-  padding-top: 13vh;
+  margin: 5vh 0;
   background-color: #1c1c1c;
+  .past {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: clamp(200px, 30vh, 500px);
+    width: 100%;
+    .pastLotteryCard {
+      display: flex;
+      height: fit-content;
+      width: clamp(80px, 30%, 250px);
+      border: 5px solid #f4eddc;
+      border-radius: 3px;
+      overflow: hidden;
+      img {
+        width: 100%;
+      }
+    }
+    #prio-0 {
+      z-index: 3;
+      position: absolute;
+      margin-left: -40%;
+      filter: brightness(0.7);
+    }
+    #prio-1 {
+      z-index: 4;
+      position: absolute;
+      filter: brightness(0.85);
+    }
+    #prio-2 {
+      z-index: 5;
+      position: absolute;
+      margin-left: 40%;
+    }
+  }
   .circle {
     display: block;
     width: 85vw;
@@ -30,10 +63,17 @@ html {
     background-color: #8f0101;
     z-index: 0;
     position: absolute;
+    top: 40vh;
+    flex: 1;
   }
   .cardContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     z-index: 2;
-    text-align: center;
+    padding-top: 5vh;
+    flex: 1;
     .lotteryCard {
       display: flex;
       overflow: hidden;

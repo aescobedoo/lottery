@@ -10,6 +10,7 @@ import cards from "./cards";
 import Card from "./components/Card";
 import Button from "./components/Button";
 import Settings from "./components/Settings";
+import PastCard from "./components/PastCards"; // Import PastCard component
 import corre from "./resources/corre.mp3"; // Import the intro audio
 
 // Utility function to shuffle an array
@@ -28,12 +29,13 @@ function App() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioFiles, setAudioFiles] = useState({});
   const [imageFiles, setImageFiles] = useState({});
-  const [intervalSeconds, setIntervalSeconds] = useState(1.9);
+  const [intervalSeconds, setIntervalSeconds] = useState(1.8);
   const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
   const [isAutoPlayEnabled, setIsAutoPlayEnabled] = useState(true);
 
-  // Ref for audio element
   const audioElement = useRef(new Audio());
+
+  const memoCards = useMemo(() => cards, [cards]);
 
   useEffect(() => {
     const preloadAudioFiles = () => {
@@ -57,38 +59,32 @@ function App() {
 
     preloadAudioFiles();
     preloadImageFiles();
-  }, []);
+  }, [cards]);
 
-  const memoizedCards = useMemo(() => cards, []);
+  const memoAudios = useMemo(() => audioFiles, [audioFiles]);
+  const memoImages = useMemo(() => imageFiles, [imageFiles]);
 
   const playAudio = useCallback(
     (audioFile) => {
-      if (audioFiles[audioFile]) {
-        console.log("Audio found");
-        audioElement.current.src = audioFiles[audioFile];
+      if (memoAudios[audioFile]) {
+        audioElement.current.src = memoAudios[audioFile];
         audioElement.current.currentTime = 0;
         audioElement.current
           .play()
           .catch((error) => console.error(`Error playing audio: ${error}`));
-      } else {
-        console.log("Error finding the audio");
       }
     },
-    [audioFiles]
+    [memoAudios]
   );
 
   const shuffle = useCallback(() => {
-    console.log("Using shuffle");
-    console.log("Setting cards");
-    setPlayingCards(shuffleArray(memoizedCards));
+    setPlayingCards(shuffleArray(memoCards));
     setCurrentCardIndex(0);
-    // Ensure the audio context is created on user interaction
     playAudio("corre");
     setTimeout(() => {
       setIsPlaying(true);
-      
-    }, 2000);
-  }, [memoizedCards, playAudio]);
+    }, 2200);
+  }, [memoCards, playAudio]);
 
   const nextCard = useCallback(() => {
     setIsPlaying(true);
@@ -97,7 +93,7 @@ function App() {
     } else {
       setIsPlaying(false);
     }
-  }, [currentCardIndex]);
+  }, [currentCardIndex, cards.length]);
 
   const pause = useCallback(() => {
     setIsPlaying(false);
@@ -119,10 +115,10 @@ function App() {
   }, [
     isPlaying,
     currentCardIndex,
-    playingCards,
     playAudio,
-    isAutoPlayEnabled,
+    playingCards,
     intervalSeconds,
+    isAutoPlayEnabled,
     nextCard,
   ]);
 
@@ -144,8 +140,29 @@ function App() {
     setIsSettingsMenuOpen(false);
   };
 
+  // Determine previous cards and assign priority
+  const previousCards = useMemo(() => {
+    const startIndex = Math.max(currentCardIndex - 3, 0);
+    const prevCards = playingCards.slice(startIndex, currentCardIndex);
+    const priorities = ["2", "1", "0"];
+    return prevCards.map((card, index) => ({
+      ...card,
+      priority: priorities[prevCards.length - 1 - index] || "2",
+    }));
+  }, [currentCardIndex, playingCards]);
+
   return (
     <div className="main">
+      <div className="past">
+        {previousCards.map((card, index) => (
+          <PastCard
+            key={index}
+            card={card}
+            image={memoImages[card.img]?.src}
+            priority={card.priority}
+          />
+        ))}
+      </div>
       <div className="circle"></div>
       <Card
         card={playingCards[currentCardIndex]}
