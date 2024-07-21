@@ -24,18 +24,15 @@ const shuffleArray = (array) => {
 };
 
 function App() {
-  const [playingCards, setPlayingCards] = useState(shuffleArray(cards));
-  const [currentCardIndex, setCurrentCardIndex] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
+  // Initialize loading cards to memory and assign random order of cards
+  const memoCards = useMemo(() => cards, [cards]);
+  const [playingCards, setPlayingCards] = useState(shuffleArray(memoCards));
+
+  // Manage loading files tp memory to reduce probability of error when loading the audios/images
   const [audioFiles, setAudioFiles] = useState({});
   const [imageFiles, setImageFiles] = useState({});
-  const [intervalSeconds, setIntervalSeconds] = useState(1.8);
-  const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
-  const [isAutoPlayEnabled, setIsAutoPlayEnabled] = useState(true);
 
   const audioElement = useRef(new Audio());
-
-  const memoCards = useMemo(() => cards, [cards]);
 
   useEffect(() => {
     const preloadAudioFiles = () => {
@@ -76,6 +73,33 @@ function App() {
     },
     [memoAudios]
   );
+
+  //Manage desired settings
+  const [intervalSeconds, setIntervalSeconds] = useState(4);
+  const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
+  const [isAutoPlayEnabled, setIsAutoPlayEnabled] = useState(true);
+
+  const handleSettingsSubmit = (event) => {
+    event.preventDefault();
+    const secs = parseFloat(event.target.querySelector("#inputText").value);
+    const toggle = event.target.querySelector("#toggle").checked;
+    setIntervalSeconds(!isNaN(secs) ? secs : 4);
+    setIsAutoPlayEnabled(toggle);
+    setIsSettingsMenuOpen(false);
+  };
+
+  const toggleSettingsMenu = (event) => {
+    event.preventDefault();
+    setIsSettingsMenuOpen((prevState) => !prevState);
+  };
+
+  const handleAutoPlayToggle = () => {
+    setIsAutoPlayEnabled((prevState) => !prevState);
+  };
+
+  // Manage game state and restart
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const shuffle = useCallback(() => {
     setPlayingCards(shuffleArray(memoCards));
@@ -121,24 +145,6 @@ function App() {
     isAutoPlayEnabled,
     nextCard,
   ]);
-
-  const toggleSettingsMenu = (event) => {
-    event.preventDefault();
-    setIsSettingsMenuOpen((prevState) => !prevState);
-  };
-
-  const handleAutoPlayToggle = () => {
-    setIsAutoPlayEnabled((prevState) => !prevState);
-  };
-
-  const handleSettingsSubmit = (event) => {
-    event.preventDefault();
-    const secs = parseFloat(event.target.querySelector("#inputText").value);
-    const toggle = event.target.querySelector("#toggle").checked;
-    setIntervalSeconds(!isNaN(secs) ? secs : 1.5);
-    setIsAutoPlayEnabled(toggle);
-    setIsSettingsMenuOpen(false);
-  };
 
   // Determine previous cards and assign priority
   const previousCards = useMemo(() => {
