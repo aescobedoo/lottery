@@ -25,7 +25,7 @@ const shuffleArray = (array) => {
 
 function App() {
   // Initialize loading cards to memory and assign random order of cards
-  const memoCards = useMemo(() => cards, [cards]);
+  const memoCards = useMemo(() => cards, []);
   const [playingCards, setPlayingCards] = useState(shuffleArray(memoCards));
 
   // Manage loading files tp memory to reduce probability of error when loading the audios/images
@@ -56,7 +56,7 @@ function App() {
 
     preloadAudioFiles();
     preloadImageFiles();
-  }, [cards]);
+  }, []);
 
   const memoAudios = useMemo(() => audioFiles, [audioFiles]);
   const memoImages = useMemo(() => imageFiles, [imageFiles]);
@@ -117,7 +117,7 @@ function App() {
     } else {
       setIsPlaying(false);
     }
-  }, [currentCardIndex, cards.length]);
+  }, [currentCardIndex]);
 
   const pause = useCallback(() => {
     setIsPlaying(false);
